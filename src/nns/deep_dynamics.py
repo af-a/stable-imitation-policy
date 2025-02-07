@@ -160,7 +160,8 @@ def joint_lpf_ds_model(device, lsd=2, fhat_layers=[2, 256, 256, 256, 2], lpf_lay
 
     # convex Lyapunov function
     lpf = Calibrate(PosDefICNN(lpf_layers, eps=eps, negative_slope=0.01),
-                   device=device)
+                    n=lsd,
+                    device=device)
     lpf.to(device)
 
     # joint dynamics model

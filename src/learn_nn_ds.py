@@ -241,7 +241,8 @@ class NL_DS(PlanningPolicyInterface):
             self.__nn_module = init_sdsef_model(input_dim=self.__data_dim, device=self.__device)
         elif self.__network_type == 'snds':
             self.__nn_module, self.__lpf  = joint_lpf_ds_model(device=self.__device, lsd=self.__data_dim, alpha=self.__alpha, eps=self.__epsilon,
-                                                               relaxed=self.__relaxed)
+                                                               relaxed=self.__relaxed, fhat_layers=[self.__data_dim, 256, 256, 256, self.__data_dim],
+                                                               lpf_layers=[self.__data_dim, 64, 64, 1])
         else:
             raise NotImplementedError(f'Network type {self.__network_type} is not available!')
 
