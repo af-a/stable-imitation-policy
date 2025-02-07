@@ -3,6 +3,7 @@
 
 import os
 import sys
+import json
 
 from typing import Tuple, Union
 from tqdm.auto import tqdm
@@ -172,6 +173,53 @@ def load_pylasa_data(motion_shape: str = "Angle", plot_data: bool = False,
     concatenated_vel = np.concatenate(vel_list, axis=1)
 
     return concatenated_pos.T, concatenated_vel.T
+
+
+def load_custom_data(data_file_path: str, plot_data: bool = False,
+    calibrated: bool = True, normalized: bool = True, n_dems: int = 10):
+    """
+    Based on load_pylasa_data. Loads trajectory data in custom format from JSON file.
+    TODO: Update description
+    """
+
+    print(f'[INFO] Loading data from {data_file_path}')
+    with open(data_file_path, 'r') as file_handle:
+        data = json.load(file_handle)
+
+    # extract pos and vel data
+    pos_list = list()
+    vel_list = list()
+
+    num_demos = len(data['pos'])
+    try:
+        num_samples = data['num_samples_per_trajectory'][0][0]
+    except KeyError:
+        num_samples = np.array(data['pos']).shape[-1]
+    num_dims = np.array(data['pos']).shape[1]
+
+    print(f'[INFO] Loaded {num_demos} demonstrations')
+    print(f'[INFO] Number of samples in each trajectory: {num_samples}')
+    print(f'[INFO] Dimensionality: {num_dims}')
+    for dem_index in range(num_demos):
+        calibrated_pos = calibrate(np.array(data['pos'][dem_index])) if calibrated else np.array(data['pos'][dem_index])
+        normalized_vel = normalize(np.array(data['vel'][dem_index])) if normalized else np.array(data['vel'][dem_index])
+        normalized_pos = normalize(calibrated_pos) if normalized else calibrated_pos
+
+        pos_list.append(normalized_pos)
+        vel_list.append(normalized_vel)
+
+        if dem_index + 1 == n_dems:
+            logger.info(f'Stopping at maximum {n_dems} demonstrations')
+            break
+
+    if plot_data:
+        hw_data_module.utilities.plot_model(data)
+
+    # concatenate the results
+    concatenated_pos = np.concatenate(pos_list, axis=1)
+    concatenated_vel = np.concatenate(vel_list, axis=1)
+
+    return concatenated_pos.T, concatenated_vel.T, num_samples
 
 
 def generate_synthetic_linear_data(A: np.matrix, start_point: Tuple[float, float],
