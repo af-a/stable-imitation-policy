@@ -14,7 +14,8 @@ import matplotlib.pyplot as plt
 def generate_trajectories(ds, reference: np.ndarray, space_stretch: float = 0.1,
                           n_samples: int = 1000, file_name: str = "test", save_dir: str = "",
                           n_rollouts: int = 3, rollouts_ic_std: int = 0.1,
-                          show_legends: bool = False, save_rollouts: bool = True):
+                          show_legends: bool = False, save_rollouts: bool = True,
+                          test_mean_initial: bool = True):
     """ Execute a policy for given a DS model and save output trajectories.
 
     Args:
@@ -37,6 +38,8 @@ def generate_trajectories(ds, reference: np.ndarray, space_stretch: float = 0.1,
     # Note: currently taken directly from training trajectories:
     goal_point = reference[-1]
     initial_states = np.array([reference[idx * n_samples] for idx in range(len(reference) // n_samples)])
+    if test_mean_initial:
+        initial_states = initial_states.mean(axis=0)[np.newaxis]
     print(f'Initial states ({initial_states.shape}):\n{initial_states}')
 
     # original policy rollouts
