@@ -53,11 +53,6 @@ def generate_trajectories(ds, reference: np.ndarray, space_stretch: float = 0.1,
         simulated_traj.append(np.array([start]).reshape(1, dim))
 
         distance_to_target = np.linalg.norm(simulated_traj[-1] - goal_point)
-        while distance_to_target > limit and len(simulated_traj) < 5e3:
-            vel = ds.predict(simulated_traj[-1])
-            simulated_traj.append(simulated_traj[-1] + dt * vel)
-            distance_to_target = np.linalg.norm(simulated_traj[-1] - goal_point)
-
         while len(simulated_traj) < 5e3:
             if distance_to_target <= limit:
                 print(f'[INFO] Reached goal after {len(simulated_traj)} time steps')
