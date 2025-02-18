@@ -4,6 +4,7 @@ Contains general model evaluation functions
 """
 
 import os
+import time
 import json
 import numpy as np
 import matplotlib.pyplot as plt
@@ -44,10 +45,12 @@ def generate_trajectories(ds, reference: np.ndarray, space_stretch: float = 0.1,
     limit = np.linalg.norm(lims) / 100
 
     simulated_trajs_list = []
+    traj_generation_time_list = []
 
     print(f'[INFO] Computed trajectory value limit for generation: {limit}')
     print(f'[INFO] Generating policy rollouts...')
     for idx, start in enumerate(initial_states):
+        start_time = time.time()
         print(f'[INFO] Generating trajectory for initial state: {start}')
         simulated_traj: List[np.ndarray] = []
         simulated_traj.append(np.array([start]).reshape(1, dim))
@@ -63,6 +66,8 @@ def generate_trajectories(ds, reference: np.ndarray, space_stretch: float = 0.1,
         else:
             print(f'[INFO] Failed to reach goal after 5000 timesteps. Terminating...')
 
+        traj_generation_time_list.append(time.time() - start_time)
+
         simulated_traj = np.array(simulated_traj)
         simulated_traj = simulated_traj.reshape(simulated_traj.shape[0],
                                                 simulated_traj.shape[2])
@@ -72,6 +77,11 @@ def generate_trajectories(ds, reference: np.ndarray, space_stretch: float = 0.1,
             name = file_name if file_name != "" else 'plot'
             os.makedirs(os.path.join(save_dir, name), exist_ok=True)
             np.save(os.path.join(save_dir, name, f'rollout_original_{idx}'), simulated_traj)
+
+    mean_traj_generation_time = sum(traj_generation_time_list) / len(traj_generation_time_list)
+    median_traj_generation_time = np.median(traj_generation_time_list)
+    print(f'[INFO] Average time to generate a trajectory: {mean_traj_generation_time:.4f} seconds')
+    print(f'[INFO] Median time to generate a trajectory: {median_traj_generation_time:.4f} seconds')
 
     data_dict = {'pos': [traj_array.T.tolist() for traj_array in simulated_trajs_list],
                  'initial_pos': initial_states.tolist()}
