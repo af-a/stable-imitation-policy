@@ -48,6 +48,7 @@ def generate_trajectories(ds, reference: np.ndarray, space_stretch: float = 0.1,
     limit = np.linalg.norm(lims) / 100
 
     simulated_trajs_list = []
+    tvec_array_list = []
     traj_generation_time_list = []
 
     print(f'[INFO] Computed trajectory value limit for generation: {limit}')
@@ -69,6 +70,9 @@ def generate_trajectories(ds, reference: np.ndarray, space_stretch: float = 0.1,
         else:
             print(f'[INFO] Failed to reach goal after 5000 timesteps. Terminating...')
 
+        tvec_array = np.arange(0., len(simulated_traj) * dt, dt)
+        tvec_array_list.append(tvec_array.tolist())
+
         traj_generation_time_list.append(time.time() - start_time)
 
         simulated_traj = np.array(simulated_traj)
@@ -87,6 +91,7 @@ def generate_trajectories(ds, reference: np.ndarray, space_stretch: float = 0.1,
     print(f'[INFO] Median time to generate a trajectory: {median_traj_generation_time:.4f} seconds')
 
     data_dict = {'pos': [traj_array.T.tolist() for traj_array in simulated_trajs_list],
+                 'tvec': tvec_array_list,
                  'initial_pos': initial_states.tolist()}
 
     output_file_path = os.path.join(save_dir, file_name + '.json')
