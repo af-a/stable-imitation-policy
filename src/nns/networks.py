@@ -12,6 +12,8 @@ from lipnet.group_sort import GroupSort
 from lipnet.bjorck_linear import BjorckLinear
 from torch.autograd import Variable
 
+_ = torch.manual_seed(0)
+
 
 class NN(nn.Module):
     def __init__(self, input_shape: int = 2, output_shape: int = 2):

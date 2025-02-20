@@ -20,6 +20,9 @@ from nns.deep_dynamics import joint_lpf_ds_model
 from utils.utils import mse
 from utils.log_config import logger
 
+np.random.seed(0)
+_ = torch.manual_seed(0)
+
 
 class NL_DS(PlanningPolicyInterface):
     """ Approximation of a dynamical system using nonlinear approaches.

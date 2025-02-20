@@ -23,6 +23,7 @@ from utils.data_loader import load_custom_data
 
 from utils.model_evaluation import generate_trajectories
 
+np.random.seed(0)
 
 # Note: based on original nnds_training.train_neural_policy
 def train_neural_policy(network: str, mode: str, data_file_path: str, 

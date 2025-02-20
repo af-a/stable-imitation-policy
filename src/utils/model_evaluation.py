@@ -9,6 +9,7 @@ import json
 import numpy as np
 import matplotlib.pyplot as plt
 
+np.random.seed(0)
 
 # Note: based on plot_trajectories.plot_trajectories()
 def generate_trajectories(ds, reference: np.ndarray, space_stretch: float = 0.1,

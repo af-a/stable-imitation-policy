@@ -11,6 +11,8 @@ import torch.nn.functional as F
 from torch import nn
 from typing import List
 
+_ = torch.manual_seed(0)
+
 
 class NormalNN(nn.Module):
     def __init__(self, layer_sizes: List[int] = [2, 128, 128, 128, 2],

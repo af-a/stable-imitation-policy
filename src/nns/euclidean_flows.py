@@ -15,6 +15,9 @@ import torch.nn.functional as F
 from torch import autograd
 from torch.utils.data import TensorDataset
 
+np.random.seed(0)
+_ = torch.manual_seed(0)
+
 
 class NaturalGradientDescentVelNet(nn.Module):
     """
