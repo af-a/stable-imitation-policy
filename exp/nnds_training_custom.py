@@ -55,7 +55,9 @@ def train_neural_policy(network: str, mode: str, data_file_path: str,
     states, state_der, num_samples = load_custom_data(data_file_path=data_file_path, normalized=True)
     split = train_test_split(states, state_der, test_size=test_size, random_state=np.random.randint(10))
     states_train, states_test, state_der_train, state_der_test = split
-    print(f'Shape of the train data is {states_train.shape} and test is {states_test.shape}.')
+    # Note: use all data for training:
+    states_train, state_der_train = states, state_der
+    print(f'Shape of the train data is {states_train.shape} and validation subset is {states_test.shape}')
 
     ''' Train and save a model'''
     nl_ds = NL_DS(network=network, data_dim=states.shape[1], gpu=gpu, alpha=alpha, eps=eps, relaxed=relaxed)
