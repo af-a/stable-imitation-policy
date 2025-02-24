@@ -52,7 +52,8 @@ def train_neural_policy(network: str, mode: str, data_file_path: str,
     model_name = model_name.lower()
     name = f'{model_name}-{network}-{data_file_path.split("/")[-1].split(".")[0]}-{datetime.now().strftime("%d-%m-%H-%M")}'
 
-    states, state_der, num_samples = load_custom_data(data_file_path=data_file_path, normalized=True)
+    # states, state_der, num_samples = load_custom_data(data_file_path=data_file_path, normalized=True)
+    states, state_der, num_samples = load_custom_data(data_file_path=data_file_path, normalized=False, calibrated=False)
     split = train_test_split(states, state_der, test_size=test_size, random_state=np.random.randint(10))
     states_train, states_test, state_der_train, state_der_test = split
     # Note: use all data for training:
