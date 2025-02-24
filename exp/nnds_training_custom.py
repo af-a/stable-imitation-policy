@@ -88,7 +88,7 @@ def train_neural_policy(network: str, mode: str, data_file_path: str,
         trajectories_file_name = f'{model_name}-evaluation-trajectories-{datetime.now().strftime("%d-%m-%H-%M")}'
     generate_trajectories(nl_ds, states, n_samples=num_samples, save_dir=save_dir, file_name=trajectories_file_name)
     mse = compute_reference_mse(nl_ds, states, state_der)
-    print(f'[INFO] MSE between reference and predicted velocities at all reference positions: {mse:.5f}')
+    print(f'[INFO] MSE between reference and predicted velocities at all reference positions: {mse:.10f}')
 
     ''' Save the DS '''
     if save:
