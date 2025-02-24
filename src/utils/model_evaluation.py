@@ -47,6 +47,8 @@ def generate_trajectories(ds, reference: np.ndarray, space_stretch: float = 0.1,
     dt: float = 0.01
     lims = [ (reference[:, i].max() - reference[:, i].min()) for i in range(reference.shape[1])]
     limit = np.linalg.norm(lims) / 100
+    # limit = 0.01679588037870918
+    limit = 0.017
 
     simulated_trajs_list = []
     tvec_array_list = []
