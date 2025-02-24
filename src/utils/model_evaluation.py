@@ -100,3 +100,15 @@ def generate_trajectories(ds, reference: np.ndarray, space_stretch: float = 0.1,
     with open(output_file_path, 'w') as file_handle:
         json.dump(data_dict, file_handle)
 
+def compute_reference_mse(ds, reference_states: np.ndarray, reference_states_der: np.ndarray):
+    """ Compute the MSE between reference and predicted velocities at all reference positions.
+
+    Args:
+        ds (PlanningPolicyInterface): A dynamical system for motion generation task.
+        reference_states (np.ndarray): Reference positions array (n_samples, dim).
+        reference_states_der (np.ndarray): Corresponding reference velocities array (n_samples, dim).
+    """
+    pred_vels = ds.predict(reference_states)
+
+    return ((pred_vels - reference_states_der) ** 2).mean()
+
