@@ -80,7 +80,10 @@ def train_neural_policy(network: str, mode: str, data_file_path: str,
         except RuntimeError:
             print(f'[WARN] Skipping contour plotting since only works for 2 DOF at the moment')
 
-    trajectories_file_name = f'{model_name}-{network}-evaluation-trajectories-{datetime.now().strftime("%d-%m-%H-%M")}'
+    if mode == 'train':
+        trajectories_file_name = f'{name}-evaluation-trajectories-{datetime.now().strftime("%d-%m-%H-%M")}'
+    elif mode == 'test':
+        trajectories_file_name = f'{model_name}-evaluation-trajectories-{datetime.now().strftime("%d-%m-%H-%M")}'
     generate_trajectories(nl_ds, states, n_samples=num_samples, save_dir=save_dir, file_name=trajectories_file_name)
 
     ''' Save the DS '''
