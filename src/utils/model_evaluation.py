@@ -102,7 +102,8 @@ def generate_trajectories(ds, reference: np.ndarray, space_stretch: float = 0.1,
     with open(output_file_path, 'w') as file_handle:
         json.dump(data_dict, file_handle)
 
-def compute_reference_mse(ds, reference_states: np.ndarray, reference_states_der: np.ndarray):
+def compute_reference_mse(ds, reference_states: np.ndarray, reference_states_der: np.ndarray, 
+                          file_name: str = "predicted_and_ref_velocities", save_dir: str = "/tmp"):
     """ Compute the MSE between reference and predicted velocities at all reference positions.
 
     Args:
@@ -111,6 +112,13 @@ def compute_reference_mse(ds, reference_states: np.ndarray, reference_states_der
         reference_states_der (np.ndarray): Corresponding reference velocities array (n_samples, dim).
     """
     pred_vels = ds.predict(reference_states)
+    data_dict = {'pred_vel': pred_vels.T.tolist(),
+                 'ref_vel': reference_states.T.tolist()}
+
+    output_file_path = os.path.join(save_dir, file_name + '.json')
+    print(f'[INFO] Saving predicted and ref trajectories in: {output_file_path}')
+    with open(output_file_path, 'w') as file_handle:
+        json.dump(data_dict, file_handle)
 
     return ((pred_vels - reference_states_der) ** 2).mean()
 
