@@ -34,7 +34,7 @@ class RL_DS(PlanningPolicyInterface):
 
     def __init__(self, algorithm: str = "GAIL", use_gpu: bool = True,
                  gym_env: str = "taskspace2d", gym_envs_path: str = 'envs',
-                 n_envs: int = 16, learner_agent: str = "PPO"):
+                 n_envs: int = 16, learner_agent: str = "PPO", data_dim: int = 2):
         """ Initialize a RL_DS object.
         """
 
@@ -47,7 +47,10 @@ class RL_DS(PlanningPolicyInterface):
 
         self.setup_gym_env(gym_env, gym_envs_path)
         assert n_envs > 2, "Better to have at least two environments"
-        self.__vector_envs = DummyVecEnv([lambda: gym.make(f'{gym_env}-v0')] * n_envs)
+        if data_dim != 2:
+            self.__vector_envs = DummyVecEnv([lambda: gym.make(f'{gym_env}-v0', data_dim=data_dim)] * n_envs)
+        else:
+            self.__vector_envs = DummyVecEnv([lambda: gym.make(f'{gym_env}-v0')] * n_envs)
 
         self.__learner = self._init_learner(agent=learner_agent)
         self.__algorithm = algorithm
@@ -181,7 +184,14 @@ class RL_DS(PlanningPolicyInterface):
             vels (np.ndarray): Augmented velocities.
         """
 
-        assert n_dems != 0 and trajs.shape[0] >= 1000, "Expert demonstrations not passed properly"
+        # Note: only works when traj length is 1000, so currently restricted to that
+        trajs_aug = trajs.copy()
+        vels_aug = vels.copy()
+        while trajs_aug.shape[0] < 1000:
+            trajs_aug = np.vstack((trajs, trajs_aug))
+            vels_aug = np.vstack((vels, vels_aug))
+        trajs = trajs_aug.copy()[:1000, :]
+        vels = vels_aug.copy()[:1000, :]
         len_single_traj = int(trajs.shape[0] / n_dems)
 
         for traj_idx in range(n_dems):
