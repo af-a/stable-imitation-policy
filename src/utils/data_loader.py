@@ -176,7 +176,7 @@ def load_pylasa_data(motion_shape: str = "Angle", plot_data: bool = False,
 
 
 def load_custom_data(data_file_path: str, plot_data: bool = False,
-    calibrated: bool = True, normalized: bool = True, n_dems: int = 10):
+    calibrated: bool = True, normalized: bool = True):
     """
     Based on load_pylasa_data. Loads trajectory data in custom format from JSON file.
     TODO: Update description
@@ -207,10 +207,6 @@ def load_custom_data(data_file_path: str, plot_data: bool = False,
 
         pos_list.append(normalized_pos)
         vel_list.append(normalized_vel)
-
-        if dem_index + 1 == n_dems:
-            logger.info(f'Stopping at maximum {n_dems} demonstrations')
-            break
 
     if plot_data:
         hw_data_module.utilities.plot_model(data)
